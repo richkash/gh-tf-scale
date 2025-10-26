@@ -7,10 +7,15 @@ on:
         description: 'Environment to deploy'
         required: true
         default: dev
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
 
 jobs:
   build:
-    name: Build Resources for ${{ github.event.inputs.env }}
+    name: Build Resources for ${{ github.event.inputs.env }} Environment
     runs-on: ubuntu-latest
 
     env:
@@ -46,7 +51,13 @@ jobs:
         run: terraform -chdir=${TF_ENV_DIR} validate
 
       - name: Terraform Plan
-        run: terraform -chdir=${TF_ENV_DIR} plan
+        run: terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
+
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.TF_ENV }}-terraform-plan
+          path: ${{ env.TF_ENV_DIR }}/tfplan
 
       - name: Terraform Apply
         run: terraform -chdir=${TF_ENV_DIR} apply -auto-approve        
