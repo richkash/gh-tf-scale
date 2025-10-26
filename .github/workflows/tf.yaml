@@ -48,5 +48,5 @@ jobs:
       - name: Terraform Plan
         run: terraform -chdir=${TF_ENV_DIR} plan
 
-      # - name: Terraform Apply
-      #   run: terraform -chdir=${TF_ENV_DIR} apply -auto-approve        
+      - name: Terraform Apply
+        run: terraform -chdir=${TF_ENV_DIR} apply -auto-approve        
