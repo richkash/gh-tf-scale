@@ -17,8 +17,8 @@ jobs:
       AWS_REGION: us-east-1
       TF_ENV: ${{ github.event.inputs.env }}
       TF_BACKEND_BUCKET: gh-tf-ci-state
-      TF_ENV_DIR: terraform/environments/${{ github.event.inputs.env }}
-      TF_BACKEND_KEY: environments/${{ github.event.inputs.env }}/terraform.tfstate
+      TF_ENV_DIR: environments/${TF_ENV}
+      TF_BACKEND_KEY: environments/${TF_ENV}/terraform.tfstate
 
     steps:
       - name: Checkout
