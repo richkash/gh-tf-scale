@@ -60,4 +60,4 @@ jobs:
           path: ${{ env.TF_ENV_DIR }}/tfplan
 
       - name: Terraform Apply
-        run: terraform -chdir=${TF_ENV_DIR} apply -auto-approve        
+        run: terraform -chdir=${TF_ENV_DIR} apply -auto-approve
