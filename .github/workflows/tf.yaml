@@ -79,7 +79,9 @@ jobs:
 
       - name: Install Conftest
         run: |
-          curl -L https://github.com/open-policy-agent/conftest/releases/latest/download/conftest_$(uname -s)_amd64.tar.gz | tar xz
+          CONFTST_VERSION="v0.41.0"
+          curl -L https://github.com/open-policy-agent/conftest/releases/download/${CONFTST_VERSION}/conftest_$(uname -s)_amd64.tar.gz -o conftest.tar.gz
+          tar -xzf conftest.tar.gz
           sudo mv conftest /usr/local/bin/
 
       - name: Run OPA Policy Checks
