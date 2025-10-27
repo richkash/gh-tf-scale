@@ -7,19 +7,21 @@ required_tags := {"Name", "Environment", "Owner"}
 deny[msg] {
   resource := input.resource_changes[_]
 
-  # Only check aws_vpc and aws_subnet resources
-  resource.type == "aws_vpc" 
-    or resource.type == "aws_subnet"
+  # Only check aws_vpc and aws_subnet
+  resource_is_target(resource)
 
-  # The tags after the change
   tags := resource.change.after.tags
-
-  # Compute missing tags
   missing := required_tags - object.keys(tags)
-
-  # If there are missing tags, deny with a message
   count(missing) > 0
   msg := sprintf("Resource %v (%v) is missing tags: %v", 
                  [resource.name, resource.type, missing])
+}
+
+# helper rule for target resources
+resource_is_target(r) {
+  r.type == "aws_vpc"
+}
+resource_is_target(r) {
+  r.type == "aws_subnet"
 }
 
