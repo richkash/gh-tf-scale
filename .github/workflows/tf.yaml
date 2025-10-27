@@ -75,7 +75,7 @@ jobs:
             terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
 
           # Export plan to JSON for OPA  
-            terraform -chdir=${TF_ENV_DIR} show -json tfplan > tfplan.json
+            terraform -chdir=${TF_ENV_DIR} show -json tfplan > ${TF_ENV_DIR}/tfplan.json
 
           # Install Conftest
             LATEST_VERSION=$(wget -O - "https://api.github.com/repos/open-policy-agent/conftest/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 2-)
