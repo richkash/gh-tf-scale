@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    name: Build Resources for ${{ github.event.inputs.env }} Environment
+    name: Building Resources in ${{ github.event.inputs.env }} Environment for ${{ github.actor }}
     runs-on: ubuntu-latest
 
     env:
@@ -23,7 +23,7 @@ jobs:
       TF_ENV: ${{ github.event.inputs.env }}
       TF_BACKEND_BUCKET: gh-tf-ci-state
       TF_ENV_DIR: environments/${{ github.event.inputs.env }}
-      TF_BACKEND_KEY: environments/${{ github.event.inputs.env }}/terraform.tfstate
+      TF_BACKEND_KEY: environments/${{ github.event.inputs.env }}-${{ github.actor }}/terraform.tfstate
 
     steps:
       - name: Checkout
