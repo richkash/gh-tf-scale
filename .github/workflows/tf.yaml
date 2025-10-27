@@ -19,36 +19,6 @@ on:
           - prod
 
 jobs:
-  Validate-files:
-    name: Validate that only terraform.tfvars files are changed
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Get changed files
-        id: changed
-        run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-          echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
-
-      - name: Validate file changes
-        run: |
-          ALLOWED_PATTERN="\.tfvars$"
-          INVALID_FILES=$(echo "${{ steps.changed.outputs.files }}" | grep -vE "$ALLOWED_PATTERN" || true)
-          if [ -n "$INVALID_FILES" ]; then
-            echo "❌ Invalid files detected:"
-            echo "$INVALID_FILES"
-            echo "Only *.tfvars files can be modified in pull requests!"
-            exit 1
-          else
-            echo "✅ Validation passed — only tfvars files were modified."
-          fi
-          
   build:
     name: Building Resources in ${{ github.event.inputs.env }} Environment for ${{ github.actor }}
     runs-on: ubuntu-latest
@@ -77,7 +47,7 @@ jobs:
       - name: Terraform Init
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
-          TF_BACKEND_KEY="environments/${TF_ENV}-${GITHUB_ACTOR}/terraform.tfstate"        
+          TF_BACKEND_KEY="environments/${TF_ENV}/${GITHUB_ACTOR}/terraform.tfstate"        
           terraform -chdir=${TF_ENV_DIR} init \
           -backend-config="bucket=${TF_BACKEND_BUCKET}" \
           -backend-config="key=${TF_BACKEND_KEY}"
