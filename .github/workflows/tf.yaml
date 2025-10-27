@@ -23,6 +23,10 @@ jobs:
     name: Building Resources in ${{ github.event.inputs.env }} Environment for ${{ github.actor }}
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write   
+      contents: read    
+
     env:
       AWS_REGION: us-east-1
       TF_ENV: ${{ github.event.inputs.env || 'dev' }}
