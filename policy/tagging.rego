@@ -1,27 +1,28 @@
 package terraform.required_tags
 
-# Define the required tags for VPCs
+# Define the required tags for VPCs and subnets
 required_tags := {"Name", "Environment", "Owner"}
 
 # Deny rule triggered if any required tag is missing
 deny[msg] {
-  resource := input.resource_changes[_]
+    some i
+    resource := input.resource_changes[i]
 
-  # Only check aws_vpc and aws_subnet
-  resource_is_target(resource)
+    # Only check aws_vpc and aws_subnet
+    resource_is_target(resource)
 
-  tags := resource.change.after.tags
-  missing := required_tags - object.keys(tags)
-  count(missing) > 0
-  msg := sprintf("Resource %v (%v) is missing tags: %v", 
-                 [resource.name, resource.type, missing])
+    tags := resource.change.after.tags
+    missing := required_tags - object.keys(tags)
+    count(missing) > 0
+
+    msg := sprintf("Resource %v (%v) is missing tags: %v", 
+                   [resource.name, resource.type, missing])
 }
 
-# helper rule for target resources
+# Helper rule for target resources
 resource_is_target(r) {
-  r.type == "aws_vpc"
+    r.type == "aws_vpc"
 }
 resource_is_target(r) {
-  r.type == "aws_subnet"
+    r.type == "aws_subnet"
 }
-
