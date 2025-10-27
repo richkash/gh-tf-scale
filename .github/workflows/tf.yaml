@@ -58,23 +58,35 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
-      - name: Terraform Init
+      - name: Terraform Plan + OPA Policy Check
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
-          TF_BACKEND_KEY="environments/${TF_ENV}/${GITHUB_ACTOR}/terraform.tfstate"        
-          terraform -chdir=${TF_ENV_DIR} init \
-          -backend-config="bucket=${TF_BACKEND_BUCKET}" \
-          -backend-config="key=${TF_BACKEND_KEY}"
+          TF_BACKEND_KEY="environments/${TF_ENV}/${GITHUB_ACTOR}/terraform.tfstate"   
 
-      - name: Terraform Validate
-        run: |
-          TF_ENV_DIR="environments/${TF_ENV}"
-          terraform -chdir=${TF_ENV_DIR} validate
+          # Terraform init     
+            terraform -chdir=${TF_ENV_DIR} init \
+            -backend-config="bucket=${TF_BACKEND_BUCKET}" \
+            -backend-config="key=${TF_BACKEND_KEY}"
 
-      - name: Terraform Plan
-        run: |
-          TF_ENV_DIR="environments/${TF_ENV}"
-          terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
+          # Terraform validate
+            terraform -chdir=${TF_ENV_DIR} validate
+
+          # Terraform plan
+            terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
+
+          # # Export plan to JSON for OPA  
+          #   terraform -chdir=${TF_ENV_DIR} show -json tfplan > ${TF_ENV_DIR}/tfplan.json
+
+          # # Install Conftest
+          #   LATEST_VERSION=$(wget -O - "https://api.github.com/repos/open-policy-agent/conftest/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c 2-)
+          #   ARCH=$(arch)
+          #   SYSTEM=$(uname)
+          #   wget "https://github.com/open-policy-agent/conftest/releases/download/v${LATEST_VERSION}/conftest_${LATEST_VERSION}_${SYSTEM}_${ARCH}.tar.gz"
+          #   tar xzf conftest_${LATEST_VERSION}_${SYSTEM}_${ARCH}.tar.gz
+          #   sudo mv conftest /usr/local/bin
+
+          # # Run OPA Policy Checks
+          #   conftest test ${TF_ENV_DIR}/tfplan.json --policy policy/
 
   # -----------------------------
   # Apply Job on Main
