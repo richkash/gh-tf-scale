@@ -51,11 +51,6 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
-      - name: Terraform Validate
-        run: |
-          TF_ENV_DIR="environments/${TF_ENV}"
-          terraform -chdir=${TF_ENV_DIR} validate
-
       - name: Terraform Init
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
@@ -64,6 +59,11 @@ jobs:
           -backend-config="bucket=${TF_BACKEND_BUCKET}" \
           -backend-config="key=${TF_BACKEND_KEY}"
 
+      - name: Terraform Validate
+        run: |
+          TF_ENV_DIR="environments/${TF_ENV}"
+          terraform -chdir=${TF_ENV_DIR} validate
+          
       - name: Terraform Plan
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
