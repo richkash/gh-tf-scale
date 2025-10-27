@@ -104,7 +104,7 @@ jobs:
       - name: Terraform Apply
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
-          TF_BACKEND_KEY="environments/${{ github.event.inputs.env }}/${{ github.actor }}/terraform.tfstate"
+          TF_BACKEND_KEY="environments/${TF_ENV}/${{ github.actor }}/terraform.tfstate"
           terraform -chdir=$TF_ENV_DIR init \
             -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
             -backend-config="key=$TF_BACKEND_KEY"
