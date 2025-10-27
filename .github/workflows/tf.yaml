@@ -1,6 +1,11 @@
 name: Terraform CI/CD
 
 on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
   workflow_dispatch:
     inputs:
       env:
@@ -20,7 +25,7 @@ jobs:
 
     env:
       AWS_REGION: us-east-1
-      TF_ENV: ${{ github.event.inputs.env }}
+      TF_ENV: ${{ github.event.inputs.env || 'dev' }}
       TF_BACKEND_BUCKET: gh-tf-ci-state
       TF_ENV_DIR: environments/${{ github.event.inputs.env }}
       TF_BACKEND_KEY: environments/${{ github.event.inputs.env }}/${{ github.actor }}/terraform.tfstate
