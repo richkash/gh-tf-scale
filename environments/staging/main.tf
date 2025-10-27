@@ -1,6 +1,6 @@
 module "vpc" {
-  source   = "../../modules/vpc"
-  env      = var.env
-  vpc_cidr = var.vpc_cidr
+  source      = "../../modules/vpc"
+  env         = var.env
+  vpc_cidr    = var.vpc_cidr
   subnet_cidr = var.subnet_cidr
 }
