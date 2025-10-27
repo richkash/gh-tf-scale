@@ -80,7 +80,7 @@ jobs:
   # Apply Job on Main
   # -----------------------------
   apply:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Apply Terraform
     runs-on: ubuntu-latest
     needs: validate-and-plan
