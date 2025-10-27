@@ -75,6 +75,13 @@ jobs:
         run: |
           TF_ENV_DIR="environments/${TF_ENV}"
           terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
+          terraform -chdir=${TF_ENV_DIR} show -json tfplan > tfplan.json
+
+      - name: Run OPA Policy Checks
+        uses: open-policy-agent/conftest-action@v2
+        with:
+          files: environments/${{ env.TF_ENV }}/tfplan.json
+          policy: policy          
 
   # -----------------------------
   # Apply Job on Main
