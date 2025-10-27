@@ -86,7 +86,7 @@ jobs:
             sudo mv conftest /usr/local/bin
 
           # Run OPA Policy Checks
-            conftest test ${TF_ENV_DIR}/tfplan.json --policy ../../policy/       
+            conftest test ${TF_ENV_DIR}/tfplan.json --policy policy/
 
   # -----------------------------
   # Apply Job on Main
