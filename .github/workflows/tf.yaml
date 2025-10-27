@@ -77,11 +77,16 @@ jobs:
           terraform -chdir=${TF_ENV_DIR} plan -out=tfplan
           terraform -chdir=${TF_ENV_DIR} show -json tfplan > tfplan.json
 
+      - name: Install Conftest
+        run: |
+          curl -L https://github.com/open-policy-agent/conftest/releases/latest/download/conftest_$(uname -s)_amd64.tar.gz | tar xz
+          sudo mv conftest /usr/local/bin/
+
       - name: Run OPA Policy Checks
-        uses: open-policy-agent/conftest-action@v2
-        with:
-          files: environments/${{ env.TF_ENV }}/tfplan.json
-          policy: policy          
+        run: |
+          TF_ENV_DIR="environments/${TF_ENV}"
+          terraform show -json ${TF_ENV_DIR}/tfplan > ${TF_ENV_DIR}/tfplan.json
+          conftest test ${TF_ENV_DIR}/tfplan.json --policy policy/       
 
   # -----------------------------
   # Apply Job on Main
